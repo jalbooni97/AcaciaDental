@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="Acacia Medical Supplies - Dental Store">
+  <title>Acacia | مستلزمات الأسنان</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#" class="brand" aria-label="Acacia">
+      <div class="brand-mark">A</div>
+      <div>
+        <strong>ACACIA</strong>
+        <span>Medical Supplies</span>
+      </div>
+    </a>
+
+    <button class="cart-button" id="cartButton" type="button" aria-label="فتح السلة">
+      <span>🛒</span>
+      <span>السلة</span>
+      <b id="cartCount">0</b>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-copy">
+        <span class="eyebrow">ACACIA DENTAL STORE</span>
+        <h1>مستلزمات الأسنان<br><span>لعيادتك في مكان واحد</span></h1>
+        <p>ابحث عن المنتج، اختر الكمية، وأرسل طلبك مباشرة عبر واتساب.</p>
+
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input id="searchInput" type="search"
+                 placeholder="ابحث باسم المنتج، الاسم العربي أو الكود..."
+                 autocomplete="off">
+          <button id="clearSearch" class="clear-search" type="button" aria-label="مسح البحث">×</button>
+        </div>
+
+        <div class="quick-stats">
+          <span><b id="heroProductCount">99</b> منتج</span>
+          <span>•</span>
+          <span>طلب مباشر عبر واتساب</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">CATALOG</span>
+        <h2>تصفح المنتجات</h2>
+      </div>
+      <span id="productCount" class="result-count">99 منتج</span>
+    </div>
+
+    <div id="categoryList" class="category-list" aria-label="تصنيفات المنتجات"></div>
+
+    <section class="featured-block" id="featuredBlock">
+      <div class="subheading">
+        <h3>⭐ منتجات مختارة</h3>
+        <button id="showAllFeatured" type="button">عرض الكل</button>
+      </div>
+      <div id="featuredProducts" class="product-grid featured-grid"></div>
+    </section>
+
+    <div class="subheading all-products-title">
+      <h3>جميع المنتجات</h3>
+    </div>
+    <div id="productsGrid" class="product-grid"></div>
+
+    <div id="emptyState" class="empty-state hidden">
+      <div>🔎</div>
+      <h3>لم نجد المنتج المطلوب</h3>
+      <p>جرّب كلمة بحث أخرى أو اختر تصنيفًا مختلفًا.</p>
+      <button id="resetFilters" type="button">عرض جميع المنتجات</button>
+    </div>
+  </section>
+</main>
+
+<!-- Floating cart -->
+<button id="floatingCart" class="floating-cart" type="button">
+  <span>🛒</span>
+  <span><b id="floatingCartCount">0</b> أصناف</span>
+  <strong id="floatingCartTotal">0 ₪</strong>
+  <span class="arrow">←</span>
+</button>
+
+<!-- Cart drawer -->
+<div id="overlay" class="overlay hidden"></div>
+<aside id="cartDrawer" class="cart-drawer" aria-label="سلة الطلب">
+  <div class="drawer-header">
+    <div>
+      <span class="eyebrow">YOUR ORDER</span>
+      <h2>طلبك</h2>
+    </div>
+    <button id="closeCart" class="icon-button" type="button" aria-label="إغلاق">×</button>
+  </div>
+
+  <div id="cartItems" class="cart-items"></div>
+
+  <div id="cartEmpty" class="cart-empty">
+    <div>🛒</div>
+    <h3>السلة فارغة</h3>
+    <p>أضف المنتجات التي تحتاجها لعيادتك.</p>
+  </div>
+
+  <div class="drawer-footer">
+    <div class="total-row">
+      <span>إجمالي الطلب</span>
+      <strong id="cartTotal">0 ₪</strong>
+    </div>
+    <button id="checkoutButton" class="primary-button" type="button" disabled>
+      متابعة الطلب
+    </button>
+  </div>
+</aside>
+
+<!-- Checkout modal -->
+<div id="checkoutModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <div class="modal-card">
+    <div class="drawer-header">
+      <div>
+        <span class="eyebrow">CHECKOUT</span>
+        <h2 id="checkoutTitle">بيانات الطلب</h2>
+      </div>
+      <button id="closeCheckout" class="icon-button" type="button" aria-label="إغلاق">×</button>
+    </div>
+
+    <form id="orderForm" novalidate>
+      <div class="form-grid">
+        <label>
+          <span>اسم الطبيب *</span>
+          <input id="doctorName" name="doctor" required placeholder="د. ...">
+        </label>
+        <label>
+          <span>اسم العيادة *</span>
+          <input id="clinicName" name="clinic" required placeholder="اسم العيادة">
+        </label>
+        <label>
+          <span>رقم الهاتف *</span>
+          <input id="phone" name="phone" type="tel" required placeholder="059xxxxxxx">
+        </label>
+        <label>
+          <span>المدينة *</span>
+          <select id="city" name="city" required>
+            <option value="">اختر المدينة</option>
+            <option>جنين</option>
+            <option>نابلس</option>
+            <option>طولكرم</option>
+            <option>رام الله</option>
+            <option>قلقيلية</option>
+            <option>طوباس</option>
+            <option>سلفيت</option>
+            <option>بيت لحم</option>
+            <option>الخليل</option>
+            <option>القدس</option>
+            <option>أخرى</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        <span>العنوان بالتفصيل *</span>
+        <textarea id="address" name="address" required rows="2" placeholder="الشارع، المنطقة..."></textarea>
+      </label>
+
+      <label>
+        <span>ملاحظات إضافية</span>
+        <textarea id="notes" name="notes" rows="3" placeholder="أي ملاحظات خاصة بالطلب أو التوصيل..."></textarea>
+      </label>
+
+      <div class="checkout-summary">
+        <span>عدد القطع</span>
+        <b id="checkoutItemsCount">0</b>
+        <span>الإجمالي</span>
+        <b id="checkoutTotal">0 ₪</b>
+      </div>
+
+      <p id="formError" class="form-error hidden"></p>
+
+      <button class="primary-button whatsapp-button" type="submit">
+        <span>إرسال الطلب عبر واتساب</span>
+        <span>→</span>
+      </button>
+
+      <small class="privacy-note">سيتم فتح واتساب مع رسالة الطلب جاهزة للمراجعة والإرسال.</small>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
