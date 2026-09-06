@@ -201,50 +201,34 @@
 
 <script src="js/app.js"></script>
 
-<!-- ============================================= -->
-<!-- كود الربط المباشر مع Firebase Firestore -->
-<!-- ============================================= -->
+<!-- ربط Firebase مع ملف app.js المباشر -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // استبدل الكائن التالي بـ firebaseConfig الخاص بمشروعك الذي نسخته
   const firebaseConfig = {
-    apiKey: "AIzaSyD3aMzgBkUFoPAnsCM0ksePvMC1btUWTzQ",
+    apiKey: "AIzaSy...", // استبدلها بـ apiKey الخاص بك
     authDomain: "acacia-dental.firebaseapp.com",
     projectId: "acacia-dental",
     storageBucket: "acacia-dental.firebasestorage.app",
-    messagingSenderId: "987642318954",
-    appId: "33a6f181-9223-4f30-874f-582d9cbb11b5"
+    messagingSenderId: "123456789...", // استبدلها بـ messagingSenderId الخاص بك
+    appId: "1:33a6f181-9223-4f30-874f-582d9cbb11b5"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // الاستماع المباشر للتغييرات في مجموعة المنتجات
+  // تحديث قاعدة البيانات وتجهيز المنتجات لنظام المتجر
   onSnapshot(collection(db, "products"), (snapshot) => {
-    const productsGrid = document.getElementById("productsGrid");
-    const heroProductCount = document.getElementById("heroProductCount");
-    const productCount = document.getElementById("productCount");
-
-    if (!productsGrid) return;
-
-    productsGrid.innerHTML = "";
-    const totalCount = snapshot.size;
-
-    if (heroProductCount) heroProductCount.textContent = totalCount;
-    if (productCount) productCount.textContent = `${totalCount} منتج`;
-
+    const products = [];
     snapshot.forEach((doc) => {
-      const p = doc.data();
-      productsGrid.innerHTML += `
-        <div class="product-card">
-          <img src="${p.image || 'images/placeholder.jpg'}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <p class="price">${p.price} ₪</p>
-        </div>
-      `;
+      products.push({ id: doc.id, ...doc.data() });
     });
+
+    // إرسال المنتجات المحدثة لملف app.js إذا كانت الدالة متوفرة
+    if (window.initProductsFromFirebase) {
+      window.initProductsFromFirebase(products);
+    }
   });
 </script>
 
