@@ -45,7 +45,7 @@
         </div>
 
         <div class="quick-stats">
-          <span><b id="heroProductCount">99</b> منتج</span>
+          <span><b id="heroProductCount">0</b> منتج</span>
           <span>•</span>
           <span>طلب مباشر عبر واتساب</span>
         </div>
@@ -59,7 +59,7 @@
         <span class="eyebrow">CATALOG</span>
         <h2>تصفح المنتجات</h2>
       </div>
-      <span id="productCount" class="result-count">99 منتج</span>
+      <span id="productCount" class="result-count">0 منتج</span>
     </div>
 
     <div id="categoryList" class="category-list" aria-label="تصنيفات المنتجات"></div>
@@ -200,5 +200,53 @@
 <div id="toast" class="toast" role="status"></div>
 
 <script src="js/app.js"></script>
+
+<!-- ============================================= -->
+<!-- كود الربط المباشر مع Firebase Firestore -->
+<!-- ============================================= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // استبدل الكائن التالي بـ firebaseConfig الخاص بمشروعك الذي نسخته
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3aMzgBkUFoPAnsCM0ksePvMC1btUWTzQ",
+    authDomain: "acacia-dental.firebaseapp.com",
+    projectId: "acacia-dental",
+    storageBucket: "acacia-dental.firebasestorage.app",
+    messagingSenderId: "987642318954",
+    appId: "33a6f181-9223-4f30-874f-582d9cbb11b5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // الاستماع المباشر للتغييرات في مجموعة المنتجات
+  onSnapshot(collection(db, "products"), (snapshot) => {
+    const productsGrid = document.getElementById("productsGrid");
+    const heroProductCount = document.getElementById("heroProductCount");
+    const productCount = document.getElementById("productCount");
+
+    if (!productsGrid) return;
+
+    productsGrid.innerHTML = "";
+    const totalCount = snapshot.size;
+
+    if (heroProductCount) heroProductCount.textContent = totalCount;
+    if (productCount) productCount.textContent = `${totalCount} منتج`;
+
+    snapshot.forEach((doc) => {
+      const p = doc.data();
+      productsGrid.innerHTML += `
+        <div class="product-card">
+          <img src="${p.image || 'images/placeholder.jpg'}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p class="price">${p.price} ₪</p>
+        </div>
+      `;
+    });
+  });
+</script>
+
 </body>
 </html>
